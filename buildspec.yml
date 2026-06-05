@@ -2,25 +2,24 @@ version: 0.2
 
 phases:
 
-  pre_build:
-    commands:
-      - echo Login to ECR
+pre_build:
+commands:
+- echo Login to ECR
+- aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 299834554299.dkr.ecr.ap-south-1.amazonaws.com
 
-      - aws ecr get-login-password \
-        --region ap-south-1 \
-        | docker login \
-        --username AWS \
-        --password-stdin \
-        299834554299.dkr.ecr.ap-south-1.amazonaws.com/frontend-ecr
+build:
+commands:
+- docker build -t frontend .
+- docker tag frontend:latest 299834554299.dkr.ecr.ap-south-1.amazonaws.com/simple-docker-service-069bab0d86a7:latest
 
-  build:
-    commands:
-      - docker build -t frontend-ecr .
+post_build:
+commands:
+- docker push 299834554299.dkr.ecr.ap-south-1.amazonaws.com/simple-docker-service-069bab0d86a7:latest
 
-      - docker tag frontend-ecr:latest \
-        299834554299.dkr.ecr.ap-south-1.amazonaws.com/frontend-ecr:latest
-
-  post_build:
-    commands:
-      - docker push \
-        299834554299.dkr.ecr.ap-south-1.amazonaws.com/frontend-ecr:latest
+```
+  - aws ssm send-command \
+    --instance-ids i-03e9d5b43e5b14ad2 \
+    --document-name AWS-RunShellScript \
+    --parameters commands="/home/ec2-user/deploy/deploy.sh" \
+    --region ap-south-1
+```
