@@ -1,7 +1,6 @@
 version: 0.2
 
 phases:
-
 pre_build:
 commands:
 - echo Login to ECR
@@ -16,4 +15,3 @@ post_build:
 commands:
 - docker push 299834554299.dkr.ecr.ap-south-1.amazonaws.com/simple-docker-service-069bab0d86a7:latest
 - aws ssm send-command --instance-ids i-03e9d5b43e5b14ad2 --document-name AWS-RunShellScript --region ap-south-1 --parameters 'commands=["aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 299834554299.dkr.ecr.ap-south-1.amazonaws.com","docker pull 299834554299.dkr.ecr.ap-south-1.amazonaws.com/simple-docker-service-069bab0d86a7:latest","docker stop frontend || true","docker rm frontend || true","docker run -d --name frontend -p 80:80 299834554299.dkr.ecr.ap-south-1.amazonaws.com/simple-docker-service-069bab0d86a7:latest"]'
-            
