@@ -5,6 +5,8 @@ phases:
       - echo "Install phase"
   pre_build:
     commands:
+      - echo Login to Docker Hub
+      - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - echo Login to ECR
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 299834554299.dkr.ecr.ap-south-1.amazonaws.com
   build:
